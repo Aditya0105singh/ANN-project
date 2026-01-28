@@ -35,10 +35,10 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Model files (if too large for git)
-*.pkl
-*.keras
-*.h5
+# Model files (handled by Git LFS)
+# *.pkl
+# *.keras
+# *.h5
 
 # Jupyter
 .ipynb_checkpoints/
