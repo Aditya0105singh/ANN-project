@@ -17,13 +17,12 @@ st.title("💻 Laptop Price Prediction")
 st.write("Enter laptop specifications to estimate its price.")
 
 # Check if model files exist
-if not os.path.exists("laptop_price_model.pkl"):
-    st.error("❌ Model file not found!")
-    st.warning("Please run `python train_model_simple.py` first to train and save the model.")
-    st.stop()
+model_files = ["laptop_price_model.pkl", "model_columns.pkl", "dropdowns.pkl", "scaler_X.pkl"]
+missing_files = [f for f in model_files if not os.path.exists(f)]
 
-if not os.path.exists("model_columns.pkl") or not os.path.exists("dropdowns.pkl") or not os.path.exists("scaler_X.pkl"):
-    st.error("❌ Model metadata files not found!")
+if missing_files:
+    st.error("❌ Model files not found!")
+    st.write(f"Missing files: {', '.join(missing_files)}")
     st.warning("Please run `python train_model_simple.py` first to train and save the model.")
     st.stop()
 
