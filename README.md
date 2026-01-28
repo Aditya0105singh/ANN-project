@@ -1,147 +1,167 @@
-# Laptop Price Prediction using Artificial Neural Networks
+# 💻 Laptop Price Predictor
 
-This project implements a sophisticated Artificial Neural Network (ANN) to predict laptop prices based on various hardware and software specifications.
+A machine learning application that predicts laptop prices based on specifications.
 
-## 🎯 Project Overview
+## 🚀 **Live Demo**
 
-A comprehensive machine learning pipeline that predicts laptop prices using deep learning techniques with advanced feature engineering and data preprocessing.
+**🔗 [https://aditya0105singh-ann-project.streamlit.app/](https://aditya0105singh-ann-project.streamlit.app/)
 
-## 📊 Dataset
+*Click the link above to try the live application!*
 
-- **Source**: Laptop price dataset with 1303 records
-- **Target Variable**: Price_euros (laptop price in Euros)
-- **Features**: Company, Product, Type, Screen specs, CPU, RAM, Memory, GPU, OS, Weight, etc.
+## 📊 Model Performance
 
-## 🏗️ Architecture
+- **MAE**: ₹12,331
+- **R² Score**: 0.653  
+- **Model**: RandomForest Regressor
+- **Features**: Brand, Type, CPU, GPU, RAM, Storage, Screen Size, Weight
 
-### Neural Network Models
-- **Standard Architecture**: 3-layer ANN with batch normalization
-- **Deep Architecture**: 5-layer ANN for complex patterns
-- **Wide Architecture**: Wide layers for high-dimensional data
+## � Features
 
-### Key Components
-- **Data Loading**: Robust CSV loading with comprehensive analysis
-- **Preprocessing**: Advanced cleaning and feature extraction
-- **Feature Engineering**: One-hot encoding, scaling, interaction features
-- **Model Training**: Multiple ANN architectures with callbacks
-- **Evaluation**: Comprehensive metrics and visualization
+- ✅ **Accurate Predictions**: Based on real laptop data
+- ✅ **Interactive UI**: Streamlit-based web interface
+- ✅ **Real-time**: Instant price estimates
+- ✅ **Mobile Responsive**: Works on all devices
+- ✅ **Smart Categories**: Budget/Mid-range/Premium indicators
 
-## 🚀 Features
+## 🛠️ Tech Stack
 
-### Data Processing
-- ✅ Automatic data type detection and conversion
-- ✅ Missing value handling and outlier detection
-- ✅ Feature extraction from complex strings (CPU, Memory, Screen)
-- ✅ Interaction feature creation
-
-### Model Capabilities
-- ✅ Multiple ANN architectures
-- ✅ Early stopping and learning rate scheduling
-- ✅ Batch normalization and dropout regularization
-- ✅ Comprehensive evaluation metrics
-
-### Visualization & Analysis
-- ✅ Training history plots
-- ✅ Prediction vs actual comparisons
-- ✅ Residual analysis
-- ✅ Results management and reporting
+- **Frontend**: Streamlit
+- **Backend**: Python, Scikit-learn
+- **Model**: RandomForest Regressor
+- **Deployment**: Streamlit Cloud
 
 ## 📁 Project Structure
 
 ```
-laptop-price-ann/
-│
-├── data/
-│   └── laptop_price.csv
-│
-├── src/
-│   ├── data_loader.py       # Data loading and exploration
-│   ├── data_preprocessor.py # Data cleaning and preprocessing
-│   ├── feature_engineering.py # Feature engineering pipeline
-│   ├── ann_model.py         # Neural network architectures
-│   ├── train.py             # Complete training pipeline
-│   └── utils.py             # Visualization and utilities
-│
-├── requirements.txt
-├── README.md
-└── ann project.ipynb        # Original notebook
+├── app_final.py              # Main Streamlit application
+├── train_model_simple.py     # Model training script
+├── laptop_price_model.pkl    # Trained model
+├── model_columns.pkl         # Feature columns
+├── dropdowns.pkl             # UI dropdown options
+├── scaler_X.pkl              # Feature scaler
+├── requirements_deploy.txt   # Dependencies
+├── Dockerfile               # Docker configuration
+└── data/                    # Dataset folder
 ```
 
-## 🛠️ Installation
+## � Quick Start
 
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Aditya0105singh/ANN-project.git
+   cd ANN-project
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements_deploy.txt
+   ```
+
+3. **Run the application**
+   ```bash
+   streamlit run app_final.py
+   ```
+
+4. **Open in browser**: `http://localhost:8501`
+
+## 📖 Deployment
+
+### **Streamlit Cloud (Live)**
+- **URL**: https://aditya0105singh-ann-project.streamlit.app/
+- **Platform**: Streamlit Community Cloud
+- **Status**: ✅ Deployed and Live
+
+### **Other Deployment Options**
+- **Docker**: `docker build -t laptop-predictor . && docker run -p 8501:8501 laptop-predictor`
+- **Heroku**: Free tier with Procfile
+- **PythonAnywhere**: Manual upload
+
+## 📊 Sample Predictions
+
+- **Dell Ultrabook** (16GB RAM, 256GB SSD): ~₹1,17,000
+- **Apple MacBook** (8GB RAM, 128GB SSD): ~₹1,20,000  
+- **HP Notebook** (8GB RAM, 256GB SSD): ~₹52,000
+
+## 🤖 Model Training
+
+To retrain the model:
 ```bash
-pip install -r requirements.txt
+python train_model_simple.py
 ```
 
-## 🏃‍♂️ Usage
+## 📈 Key Features
 
-### Quick Start
-```bash
-cd src
-python train.py
-```
+### **Data Processing**
+- ✅ CPU/GPU brand extraction
+- ✅ Storage type detection (SSD/HDD)
+- ✅ Memory and weight normalization
+- ✅ One-hot encoding for categorical variables
 
-### Advanced Usage
+### **Model Performance**
+- ✅ Mean Absolute Error: ₹12,331
+- ✅ R² Score: 0.653
+- ✅ Feature importance analysis
+- ✅ Cross-validation
+
+### **User Interface**
+- ✅ Intuitive dropdown menus
+- ✅ Real-time price prediction
+- ✅ Confidence indicators
+- ✅ Error handling
+- ✅ Mobile-friendly design
+
+## 🔧 Technical Implementation
+
+### **Feature Engineering**
 ```python
-from train import LaptopPriceTrainer
+# CPU Brand Extraction
+def extract_cpu_brand(cpu_str):
+    if 'Intel' in cpu_str:
+        return 'Intel'
+    elif 'AMD' in cpu_str:
+        return 'AMD'
+    else:
+        return 'Other'
 
-# Initialize trainer
-trainer = LaptopPriceTrainer("data/laptop_price.csv")
-
-# Run complete pipeline
-results = trainer.run_complete_pipeline(architecture='deep')
+# GPU Brand Extraction  
+def extract_gpu_brand(gpu_str):
+    if 'Nvidia' in gpu_str or 'GeForce' in gpu_str:
+        return 'Nvidia'
+    elif 'Intel' in gpu_str:
+        return 'Intel'
+    elif 'AMD' in gpu_str:
+        return 'AMD'
+    else:
+        return 'Other'
 ```
 
-## 📈 Model Performance
+### **Model Training**
+```python
+# RandomForest with optimized parameters
+model = RandomForestRegressor(
+    n_estimators=100,
+    max_depth=10,
+    min_samples_split=2,
+    min_samples_leaf=1,
+    random_state=42
+)
+```
 
-The ANN model achieves competitive performance in laptop price prediction with:
-- **R² Score**: Measures model fit
-- **RMSE**: Root Mean Square Error in price prediction
-- **MAE**: Mean Absolute Error for price estimates
-- **Training History**: Loss and MAE tracking over epochs
-
-## 🔧 Technical Highlights
-
-### Advanced Preprocessing
-- **Screen Resolution**: Extract resolution, IPS panel, touchscreen detection
-- **CPU Features**: Brand, family, and speed extraction
-- **Memory Analysis**: Capacity and type identification
-- **Weight/RAM**: Unit conversion and normalization
-
-### Feature Engineering
-- **One-Hot Encoding**: For categorical variables
-- **Standard Scaling**: For numerical features
-- **Interaction Features**: RAM×CPU, Screen×Weight, Memory×RAM ratios
-
-### Neural Network Design
-- **Batch Normalization**: Stabilizes training
-- **Dropout Regularization**: Prevents overfitting
-- **Early Stopping**: Prevents overtraining
-- **Learning Rate Scheduling**: Adaptive optimization
-
-## 📊 Business Applications
+## 🌟 Business Applications
 
 - **Price Optimization**: Competitive pricing analysis
-- **Market Analysis**: Price trend identification
+- **Market Analysis**: Price trend identification  
 - **Inventory Management**: Stock pricing decisions
 - **Customer Insights**: Price sensitivity analysis
 
-## 🔮 Future Improvements
+## 📝 Development Process
 
-- [ ] Hyperparameter optimization with GridSearch/RandomSearch
-- [ ] Ensemble methods combining multiple models
-- [ ] Advanced feature selection techniques
-- [ ] Real-time prediction API deployment
-- [ ] Cross-validation for robust evaluation
-
-## 📝 Development Notes
-
-This project demonstrates:
-- **End-to-end ML pipeline** development
-- **Deep learning** for regression tasks
-- **Feature engineering** best practices
-- **Model evaluation** and visualization
-- **Clean code architecture** and documentation
+1. **Data Collection**: Laptop specifications dataset
+2. **Preprocessing**: Feature extraction and cleaning
+3. **Model Selection**: RandomForest for best performance
+4. **Training**: Cross-validation and hyperparameter tuning
+5. **Deployment**: Streamlit web application
+6. **Testing**: Real-world validation
 
 ## 🤝 Contributing
 
