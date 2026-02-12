@@ -4,7 +4,7 @@ A machine learning application that predicts laptop prices based on specificatio
 
 ## Live Demo
 
-**https://aditya0105singh-ann-project.streamlit.app/**
+**https://ann-project-yagtqfcsohjy32frwhzgty.streamlit.app/**
 
 ## Model Performance
 
