@@ -1,10 +1,15 @@
 import numpy as np
 import pandas as pd
 import pickle
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import mean_absolute_error, r2_score
+import sys
+
+# Set encoding for Windows console to handle emojis
+if sys.platform.startswith('win'):
+    sys.stdout.reconfigure(encoding='utf-8')
 
 def extract_cpu_brand(cpu_str):
     """Extract CPU brand from CPU string"""
@@ -45,11 +50,18 @@ def extract_storage(memory_str):
     return ssd, hdd
 
 def main():
-    print("🚀 Starting simple but effective model training...")
+    print("🚀 Starting robust model training...")
     
     # Load data
-    df = pd.read_csv('data/laptop_price.csv', encoding='latin1')
-    print(f"📊 Dataset shape: {df.shape}")
+    try:
+        df = pd.read_csv('data/laptop_price.csv', encoding='latin1')
+        print(f"📊 Dataset shape: {df.shape}")
+    except FileNotFoundError:
+        print("❌ Error: 'data/laptop_price.csv' not found.")
+        return
+
+    if len(df) < 50:
+        print("⚠️ Warning: Dataset is extremely small. Model may overfit.")
     
     # Data cleaning and preprocessing
     print("🧹 Cleaning and preprocessing data...")
@@ -106,18 +118,18 @@ def main():
     
     # Train-test split
     X = df_encoded
+    # Stratify by Price_INR bins if possible, but with 20 cols it's hard. Just use random split.
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     print(f"📚 Training data shape: {x_train.shape}")
     print(f"🧪 Test data shape: {x_test.shape}")
     
-    # Use RandomForest instead of Neural Network (better for small datasets)
-    print("🌳 Training RandomForest model...")
-    model = RandomForestRegressor(
+    # Use GradientBoostingRegressor for better performance on structured data
+    print("🌳 Training Gradient Boosting model...")
+    model = GradientBoostingRegressor(
         n_estimators=100,
-        max_depth=10,
-        min_samples_split=2,
-        min_samples_leaf=1,
+        learning_rate=0.1,
+        max_depth=3,
         random_state=42
     )
     
@@ -135,6 +147,11 @@ def main():
     print(f"   MAE: ₹{mae:,.0f}")
     print(f"   R² Score: {r2:.3f}")
     
+    # Cross-validation for more robust metric (if data allows)
+    if len(X) >= 5:
+        cv_scores = cross_val_score(model, X, y, cv=5, scoring='neg_mean_absolute_error')
+        print(f"   CV MAE (5-fold): ₹{-cv_scores.mean():,.0f} (± ₹{cv_scores.std():,.0f})")
+
     # Test with sample data
     print("\n🧪 Testing with sample predictions...")
     for i in range(min(3, len(x_test))):
@@ -160,25 +177,28 @@ def main():
     # Save model and metadata
     print("💾 Saving model and metadata...")
     
-    # Save as pickle for compatibility
-    with open("laptop_price_model.pkl", "wb") as f:
-        pickle.dump(model, f)
-    
-    with open("model_columns.pkl", "wb") as f:
-        pickle.dump(model_columns, f)
-    
-    with open("dropdowns.pkl", "wb") as f:
-        pickle.dump(dropdowns, f)
-    
-    with open("scaler_X.pkl", "wb") as f:
-        pickle.dump(scaler_X, f)
-    
-    print("✅ Model training complete!")
-    print("📁 Files saved:")
-    print("   - laptop_price_model.pkl")
-    print("   - model_columns.pkl") 
-    print("   - dropdowns.pkl")
-    print("   - scaler_X.pkl")
+    try:
+        # Save as pickle for compatibility
+        with open("laptop_price_model.pkl", "wb") as f:
+            pickle.dump(model, f)
+        
+        with open("model_columns.pkl", "wb") as f:
+            pickle.dump(model_columns, f)
+        
+        with open("dropdowns.pkl", "wb") as f:
+            pickle.dump(dropdowns, f)
+        
+        with open("scaler_X.pkl", "wb") as f:
+            pickle.dump(scaler_X, f)
+        
+        print("✅ Model training complete!")
+        print("📁 Files saved:")
+        print("   - laptop_price_model.pkl")
+        print("   - model_columns.pkl") 
+        print("   - dropdowns.pkl")
+        print("   - scaler_X.pkl")
+    except Exception as e:
+        print(f"❌ Error saving files: {e}")
 
 if __name__ == "__main__":
     main()

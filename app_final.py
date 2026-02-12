@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import os
+import sklearn
 
 # ----------------------------------
 # Streamlit UI - Load model only when needed
@@ -15,6 +16,9 @@ st.set_page_config(
 
 st.title("💻 Laptop Price Prediction")
 st.write("Enter laptop specifications to estimate its price.")
+
+# Check for sklearn version compatibility
+st.sidebar.info(f"Scikit-learn version: {sklearn.__version__}")
 
 # Check if model files exist
 model_files = ["laptop_price_model.pkl", "model_columns.pkl", "dropdowns.pkl", "scaler_X.pkl"]
@@ -46,7 +50,7 @@ with col1:
     type_name = st.selectbox("Laptop Type", dropdowns["TypeName"])
     cpu = st.selectbox("CPU Brand", dropdowns["Cpu_brand"])
     gpu = st.selectbox("GPU Brand", dropdowns["Gpu_brand"])
-    os = st.selectbox("Operating System", dropdowns["OpSys"])
+    os_sys = st.selectbox("Operating System", dropdowns["OpSys"])
 
 with col2:
     ram = st.selectbox("RAM (GB)", dropdowns["Ram"])
@@ -77,7 +81,7 @@ if st.button("🔮 Predict Price"):
                 "TypeName": type_name,
                 "Cpu_brand": cpu,
                 "Gpu_brand": gpu,
-                "OpSys": os,
+                "OpSys": os_sys,
                 "Ram": ram,
                 "Inches": inches,
                 "SSD": ssd,
@@ -114,9 +118,15 @@ if st.button("🔮 Predict Price"):
 
             st.caption("⚠️ Prediction is based on historical data and may vary. Actual prices may differ based on brand, market conditions, and specific configurations.")
             
+        except ModuleNotFoundError as e:
+            st.error(f"❌ Error loading model: {str(e)}")
+            st.warning("It seems there is a mismatch between the environment used for training and this app.")
+            st.markdown("### Suggested Fix:")
+            st.code("pip install scikit-learn==<version_used_in_training>")
         except Exception as e:
             st.error(f"❌ Error making prediction: {str(e)}")
             st.write("Please check that all model files exist and are valid.")
+            st.expander("Details").write(e)
 
 # ----------------------------------
 # Footer and Additional Info
@@ -126,26 +136,21 @@ st.markdown("Built with ❤️ using Machine Learning")
 
 # Show model info
 with st.expander("📊 Model Information"):
-    st.write("**Model Type:** Random Forest Regressor")
-    st.write("**Dataset:** 20 laptop samples with prices")
+    st.write("**Model Type:** Gradient Boosting Regressor")
+    st.write("**Dataset:** Small sample dataset (for demonstration)")
     st.write("**Features:** Brand, Type, CPU, GPU, OS, RAM, Screen Size, Storage, Weight")
-    st.write("**Performance:** MAE ≈ ₹12,000, R² ≈ 0.65")
+    st.write("**Performance:** Optimized for small data")
     st.write("**Output:** Estimated price in Indian Rupees (₹)")
-    
-    st.write("**Price Ranges in Dataset:**")
-    st.write("- Minimum: ₹20,610")
-    st.write("- Maximum: ₹228,370") 
-    st.write("- Average: ₹126,660")
 
 # Show some example predictions
 with st.expander("🔍 Example Predictions"):
     st.write("**Sample laptop configurations and their predicted prices:**")
     
     examples = [
-        {"Brand": "Dell", "Type": "Ultrabook", "RAM": 16, "SSD": 256, "Price": "~₹1,17,000"},
-        {"Brand": "Apple", "Type": "Ultrabook", "RAM": 8, "SSD": 128, "Price": "~₹1,20,000"},
-        {"Brand": "HP", "Type": "Notebook", "RAM": 8, "SSD": 256, "Price": "~₹52,000"},
-        {"Brand": "Acer", "Type": "Ultrabook", "RAM": 8, "SSD": 128, "Price": "~₹27,000"}
+        {"Brand": "Dell", "Type": "Notebook", "RAM": 16, "SSD": 512, "Price": "~₹85,000"},
+        {"Brand": "Apple", "Type": "Ultrabook", "RAM": 8, "SSD": 256, "Price": "~₹1,10,000"},
+        {"Brand": "HP", "Type": "Notebook", "RAM": 8, "SSD": 256, "Price": "~₹55,000"},
+        {"Brand": "Asus", "Type": "Gaming", "RAM": 16, "SSD": 512, "Price": "~₹95,000"}
     ]
     
     for i, example in enumerate(examples, 1):
