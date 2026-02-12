@@ -100,7 +100,7 @@ def main():
         'Cpu_brand': sorted(df['Cpu_brand'].unique()),
         'Gpu_brand': sorted(df['Gpu_brand'].unique()),
         'OpSys': sorted(df['OpSys'].unique()),
-        'Ram': sorted(df['Ram'].unique())
+        'Ram': sorted(list(set(df['Ram'].unique()) | {4, 8, 12, 16, 24, 32, 64})) # Add common RAM sizes
     }
     
     # One-hot encode categorical variables
